@@ -5,15 +5,17 @@ on:
 
 jobs:
   terraform-apply:
-    name: Terraform Apply
+    name: Terraform Apply Changes
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -22,16 +24,16 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Download Terraform Plan Artifact
+      - name: Terraform Init
+        working-directory: ./terraform
+        run: terraform init -reconfigure
+
+      - name: Download plan artifact
         uses: actions/download-artifact@v4
         with:
           name: terraform-plan
           path: ./terraform
 
-      - name: Terraform Init
-        working-directory: ./terraform
-        run: terraform init -backend=false
-
       - name: Terraform Apply
         working-directory: ./terraform
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve tfplan

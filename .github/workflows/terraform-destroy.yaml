@@ -5,15 +5,17 @@ on:
 
 jobs:
   terraform-destroy:
-    name: Terraform Destroy
+    name: Destroy Infrastructure
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -24,11 +26,8 @@ jobs:
 
       - name: Terraform Init
         working-directory: ./terraform
-        run: terraform init -backend=false
+        run: terraform init -reconfigure
 
       - name: Terraform Destroy
         working-directory: ./terraform
         run: terraform destroy -auto-approve
-
-      - name: Post-Destroy Confirmation
-        run: echo "Terraform resources destroyed successfully."
