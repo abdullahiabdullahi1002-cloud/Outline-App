@@ -34,4 +34,4 @@ jobs:
 
       - name: Terraform Apply
         working-directory: ./terraform
-        run: terraform apply -auto-approve -var="admin_user_arn=${{ secrets.ADMIN_USER_ARN }}" tfplan
+        run: terraform apply -auto-approve

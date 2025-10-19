@@ -50,7 +50,7 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ./terraform
-        run: terraform plan -var="admin_user_arn=${{ secrets.ADMIN_USER_ARN }}" -out=tfplan
+        run: terraform plan -var-file="terraform.tfvars" -out=tfplan
 
       - name: Upload plan artifact
         uses: actions/upload-artifact@v4
