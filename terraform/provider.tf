@@ -1,10 +1,11 @@
 terraform {
   backend "s3" {
-    bucket       = "outline-terraform-state-abdullahi"
-    key          = "outline/terraform.tfstate"
-    region       = "eu-west-2"
-    encrypt      = true
-    use_lockfile = true
+    bucket         = "outline-terraform-state-abdullahi"
+    key            = "outline/terraform.tfstate"
+    region         = "eu-west-2"
+    dynamodb_table = "outline-terraform-locks"
+    encrypt        = true
+
   }
 
   required_providers {
