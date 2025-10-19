@@ -50,7 +50,7 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ./terraform
-        run: terraform plan -out=tfplan
+        run: terraform plan
 
       - name: Upload plan artifact
         uses: actions/upload-artifact@v4
