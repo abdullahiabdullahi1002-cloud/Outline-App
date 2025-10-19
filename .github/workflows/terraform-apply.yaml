@@ -2,10 +2,17 @@ name: Terraform Apply
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm_apply:
+        description: "Type 'yes' to confirm apply"
+        required: true
 
 jobs:
   terraform-apply:
+    name: Apply Terraform Changes
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.confirm_apply == 'yes' }}
+
 
     steps:
       - name: Checkout code

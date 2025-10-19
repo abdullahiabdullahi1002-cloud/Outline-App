@@ -2,10 +2,15 @@ name: Terraform Destroy
 
 on:
   workflow_dispatch:
-
+    inputs:
+      confirm_destroy:
+        description: "Type 'DESTROY' to confirm apply"
+        required: true
 jobs:
   terraform-destroy:
+    name: Destroy Terraform Resources
     runs-on: ubuntu-latest
+    if: ${{ github.event.inputs.confirm_destroy == 'DESTROY' }}
 
     steps:
       - name: Checkout code
