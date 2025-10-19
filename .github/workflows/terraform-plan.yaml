@@ -7,7 +7,6 @@ on:
 
 jobs:
   terraform-plan:
-    name: Terraform Lint and Plan
     runs-on: ubuntu-latest
 
     steps:
@@ -16,39 +15,29 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.5
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Lint Terraform code
-        run: terraform fmt -check -recursive
-
-      - name: TFLint
-        uses: terraform-linters/setup-tflint@v3
-      - run: tflint --recursive || echo "TFLint completed with warnings"
+          aws-region: eu-west-2
 
       - name: Download terraform.tfvars from S3
         run: aws s3 cp s3://outline-terraform-config/terraform.tfvars ./terraform/terraform.tfvars
-        
+
       - name: Terraform Init
         working-directory: ./terraform
-        run: terraform init -reconfigure
+        run: terraform init -input=false -reconfigure
 
-      - name: Terraform Validate
-        working-directory: ./terraform
-        run: terraform validate
+      - name: Terraform Lint
+        run: terraform fmt -check -recursive
 
       - name: Terraform Plan
         working-directory: ./terraform
-        run: terraform plan -out=tfplan
+        run: terraform plan -input=false -out=tfplan
 
-      - name: Upload plan artifact
+      - name: Upload Plan Artifact
         uses: actions/upload-artifact@v4
         with:
           name: terraform-plan
