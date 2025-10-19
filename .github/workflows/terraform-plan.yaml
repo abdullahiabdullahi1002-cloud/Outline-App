@@ -33,6 +33,9 @@ jobs:
         uses: terraform-linters/setup-tflint@v3
       - run: tflint --recursive || echo "TFLint completed with warnings"
 
+      - name: Download terraform.tfvars from S3
+        run: aws s3 cp s3://outline-terraform-config/terraform.tfvars ./terraform/terraform.tfvars
+        
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init -reconfigure
