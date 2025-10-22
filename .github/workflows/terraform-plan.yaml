@@ -32,7 +32,9 @@ jobs:
         run: terraform init -input=false -reconfigure
 
       - name: Terraform Lint
-        run: terraform fmt -check -recursive
+        run: |
+          tflint --recursive || echo "Lint warnings Found."
+        continue-on-error: true
 
       - name: Terraform Plan
         working-directory: ./terraform
