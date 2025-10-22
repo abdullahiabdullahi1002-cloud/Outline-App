@@ -31,11 +31,9 @@ jobs:
       - name: Download terraform.tfvars from S3
         run: aws s3 cp s3://outline-terraform-config/terraform.tfvars ./terraform/terraform.tfvars
 
-      - name: Download Plan Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: terraform-plan
-          path: ./terraform
+      - name: Terraform Plan
+        working-directory: ./terraform
+        run: terraform plan -input=false -out=tfplan
 
       - name: Terraform Init
         working-directory: ./terraform
