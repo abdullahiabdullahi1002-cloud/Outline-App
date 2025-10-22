@@ -31,13 +31,13 @@ jobs:
       - name: Download terraform.tfvars from S3
         run: aws s3 cp s3://outline-terraform-config/terraform.tfvars ./terraform/terraform.tfvars
 
-      - name: Terraform Plan
-        working-directory: ./terraform
-        run: terraform plan -input=false -out=tfplan
-
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init -input=false -reconfigure
+
+      - name: Terraform Plan
+        working-directory: ./terraform
+        run: terraform plan -input=false -out=tfplan
 
       - name: Terraform Apply
         working-directory: ./terraform
