@@ -71,43 +71,74 @@ resource "aws_route_table_association" "public-subnet-2-association" {
   route_table_id = aws_route_table.public-route-table.id
 }
 
-resource "aws_nat_gateway" "nat-gateway" {
-  allocation_id = aws_eip.nat-eip.id
-  subnet_id     = aws_subnet.public-subnet-1.id
-
-  tags = {
-    Name = "nat-gateway"
-  }
-}
-
-resource "aws_eip" "nat-eip" {
+resource "aws_eip" "nat-eip-1" {
   domain     = "vpc"
   depends_on = [aws_internet_gateway.outline-igw]
 
   tags = {
-    Name = "nat-eip"
+    Name = "nat-eip-1"
   }
 }
 
-resource "aws_route_table" "private-route-table" {
+resource "aws_eip" "nat-eip-2" {
+  domain     = "vpc"
+  depends_on = [aws_internet_gateway.outline-igw]
+
+  tags = {
+    Name = "nat-eip-2"
+  }
+}
+
+resource "aws_nat_gateway" "nat-gateway-1" {
+  allocation_id = aws_eip.nat-eip-1.id
+  subnet_id     = aws_subnet.public-subnet-1.id
+
+  tags = {
+    Name = "nat-gateway-1"
+  }
+}
+
+resource "aws_nat_gateway" "nat-gateway-2" {
+  allocation_id = aws_eip.nat-eip-2.id
+  subnet_id     = aws_subnet.public-subnet-2.id
+
+  tags = {
+    Name = "nat-gateway-2"
+  }
+}
+
+resource "aws_route_table" "private-route-table-1" {
   vpc_id = aws_vpc.outline-vpc.id
   tags = {
-    Name = "private-route-table"
+    Name = "private-route-table-1"
   }
 }
 
-resource "aws_route" "private-route" {
-  route_table_id         = aws_route_table.private-route-table.id
+resource "aws_route_table" "private-route-table-2" {
+  vpc_id = aws_vpc.outline-vpc.id
+  tags = {
+    Name = "private-route-table-2"
+  }
+}
+
+resource "aws_route" "private-route-1" {
+  route_table_id         = aws_route_table.private-route-table-1.id
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.nat-gateway.id
+  nat_gateway_id         = aws_nat_gateway.nat-gateway-1.id
+}
+
+resource "aws_route" "private-route-2" {
+  route_table_id         = aws_route_table.private-route-table-2.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.nat-gateway-2.id
 }
 
 resource "aws_route_table_association" "private-subnet-1-association" {
   subnet_id      = aws_subnet.private-subnet-1.id
-  route_table_id = aws_route_table.private-route-table.id
+  route_table_id = aws_route_table.private-route-table-1.id
 }
 
 resource "aws_route_table_association" "private-subnet-2-association" {
   subnet_id      = aws_subnet.private-subnet-2.id
-  route_table_id = aws_route_table.private-route-table.id
+  route_table_id = aws_route_table.private-route-table-2.id
 }
