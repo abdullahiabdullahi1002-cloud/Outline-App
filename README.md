@@ -119,33 +119,46 @@ APP
 
 ---
 
-## Local Development Setup
+## 🧑‍💻 Local Development Setup
 
-You can run the Outline App locally using Docker Compose.
+You can run the **Outline App** locally using **Docker Compose**, which spins up PostgreSQL, Redis, and the Outline web app — replicating the AWS environment locally.
 
-## Prerequisites
-Docker
-.env file containing local variables
+---
 
+### **Prerequisites**
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed  
+- A valid `.env` file in the project root directory  
+  *(see `.env.example` for guidance — never commit your real `.env` to GitHub)*
 
+---
+
+### **1️⃣ Clone the Repository**
 ```bash
-# 1) Clone the repository
-		git clone https://github.com/abdullahiabdullahi1002-cloud/Outline-App.git
-
-		cd Outline-App
-
-# 2) Create a .env file
-# Include local configuration required for web app to run
-
-# 3) Run the container locally
-
-# Build and run the app using Docker Compose:
-
-    docker-compose up --build
-
-# 4) Stop the App
-
-# To stop the containers:
-
-    docker-compose down
+git clone https://github.com/abdullahiabdullahi1002-cloud/Outline-App.git
+cd Outline-App
 ```
+
+### **2️⃣ Create a `.env` File**
+
+Copy `.env.sample` to `.env`.
+
+This is what the app reads for things like ports, URLs, database, Redis, etc. For local dev most of the defaults in the sample will work out of the box, you just need the file there so Docker can load it.
+
+
+
+### **3️⃣ Run the Application**
+
+To build and start the containers:
+```bash
+docker-compose up --build
+```
+
+### **4️⃣ Stop the Application**
+
+To stop the containers:
+```bash
+docker-compose down
+
+```
+
+
