@@ -1,7 +1,7 @@
 # 🚀 Outline App – Document Collaboration Platform
 
 The **Outline App** in this repository is a **self-hosted knowledge base and document collaboration platform**.  
-It allows teams to create, share, and edit documents in real time — leveraging **PostgreSQL** for persistence and **Redis** for queues and live collaboration.
+It allows teams to create, share, and edit documents in real time leveraging **PostgreSQL** for persistence and **Redis** for queues and live collaboration.
 
 This project showcases a **complete end-to-end AWS deployment**, built from scratch using:
 
@@ -18,7 +18,7 @@ This project showcases a **complete end-to-end AWS deployment**, built from scra
 ## Features
 
 - Real-time document collaboration  
-- Containerized & orchestrated – built with a multi-stage Dockerfile, deployed on ECS Fargate behind an ALB.
+- Containerized & orchestrated - built with a multi-stage Dockerfile, deployed on ECS Fargate behind an ALB.
 - Cloud deployment - secured ECS Fargate setup with least-privilege IAM roles. 
 - Infrastructure automated with Terraform  
 - Secrets and configuration managed with AWS Systems Manager Parameter Store  
@@ -64,19 +64,20 @@ Outline-App/
 
 This diagram shows how all AWS components and services fit together:
 
-![App Architecture](image.png)
+![App Architecture](Images/image.png)
 
-🔹 Components
-Cloudflare DNS – Manages public domain and CNAME records for ALB
-ALB (Application Load Balancer) – Handles HTTPS termination, health checks, and routes traffic to ECS tasks
-ECS Fargate Service – Runs containerized Outline app in private subnets
-Auto Scaling – Automatically adjusts ECS task count based on CPU/memory utilization
-RDS PostgreSQL – Persistent storage for documents and metadata
-ElastiCache Redis – Provides in-memory cache and real-time collaboration support
-SSM Parameter Store – Stores app secrets securely
-S3 + DynamoDB – Remote backend for Terraform state management
-NAT Gateway – Allows ECS tasks private internet access for updates
-ACM – Provides HTTPS certificate validated via Cloudflare DNS
+### Components
+
+- **Cloudflare DNS** – Manages public domain and CNAME records for the Application Load Balancer.
+- **ALB (Application Load Balancer)** – Terminates HTTPS, performs health checks, and routes traffic to ECS tasks.
+- **ECS Fargate Service** – Runs the containerized Outline app within private subnets.
+- **Auto Scaling** – Automatically adjusts ECS task count based on CPU and memory usage.
+- **RDS PostgreSQL** – Stores documents and metadata persistently.
+- **ElastiCache Redis** – Provides in-memory caching and supports real-time collaboration.
+- **SSM Parameter Store** – Securely stores application secrets and configuration values.
+- **S3 + DynamoDB** – Used as the remote backend for Terraform state management.
+- **NAT Gateway** – Enables ECS tasks to access the internet for updates while remaining in private subnets.
+- **ACM (AWS Certificate Manager)** – Issues HTTPS certificates, validated via Cloudflare DNS.
 
 ## SSL & DNS
 
