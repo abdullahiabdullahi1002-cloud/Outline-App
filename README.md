@@ -1,1 +1,146 @@
-# Outline-App
+# 🚀 Outline App – Document Collaboration Platform
+
+The **Outline App** in this repository is a **self-hosted knowledge base and document collaboration platform**.  
+It allows teams to create, share, and edit documents in real time — leveraging **PostgreSQL** for persistence and **Redis** for queues and live collaboration.
+
+This project showcases a **complete end-to-end AWS deployment**, built from scratch using:
+
+- **Terraform** for Infrastructure as Code  
+- **Docker** for containerization  
+- **AWS ECS Fargate** for serverless container orchestration  
+- **Application Load Balancer (ALB)** for secure HTTPS routing and traffic distribution  
+- **Auto Scaling** for high availability and adaptive resource scaling  
+- **GitHub Actions** for CI/CD automation  
+- **Cloudflare** for DNS and HTTPS management via **AWS ACM**
+
+---
+
+## Features
+
+- Real-time document collaboration  
+- Containerized & orchestrated – built with a multi-stage Dockerfile, deployed on ECS Fargate behind an ALB.
+- Cloud deployment - secured ECS Fargate setup with least-privilege IAM roles. 
+- Infrastructure automated with Terraform  
+- Secrets and configuration managed with AWS Systems Manager Parameter Store  
+- Continuous integration and delivery with GitHub Actions  
+- HTTPS and DNS managed through **Cloudflare**
+
+## 🗂️ Project Structure
+
+```bash
+Outline-App/
+│
+├── .github/
+│   └── workflows/
+│       ├── build.yml                 # Builds and pushes Docker image to ECR
+│       ├── terraform-plan.yml        # Runs terraform fmt, validate, and plan
+│       ├── terraform-apply.yml       # Manually triggered apply workflow
+│       └── terraform-destroy.yml     # Manual destroy workflow with confirmation
+│
+├── terraform/
+│   ├── modules/
+│   │   ├── acm/                      # SSL certificate management via AWS ACM
+│   │   ├── alb/                      # Application Load Balancer setup
+│   │   ├── ecs_service/              # ECS cluster, service, and task definitions
+│   │   ├── elasticache/              # Redis cluster configuration
+│   │   ├── iam/                      # IAM roles and execution policies
+│   │   ├── rds/                      # PostgreSQL RDS setup
+│   │   ├── security_groups/          # Security group rules for ECS, RDS, Redis, ALB
+│   │   └── vpc/                      # Custom VPC, subnets, IGW, NAT gateways
+│   │
+│   ├── main.tf                       # Root Terraform configuration
+│   ├── provider.tf                   # AWS provider configuration
+│   ├── ssm.tf                        # SSM parameters for app secrets
+│   ├── variables.tf                  # Input variable definitions
+│   ├── terraform.tfvars              # Downloaded securely from S3 and only stored locally
+│   └── outputs.tf                    # Outputs for ECS, ALB, and other components
+│
+├── docker-compose.yml                # Local development setup
+├── Dockerfile                        # Container build file
+└── README.md
+```
+
+## 🏗️ Architecture Overview
+
+This diagram shows how all AWS components and services fit together:
+
+![App Architecture](image.png)
+
+🔹 Components
+Cloudflare DNS – Manages public domain and CNAME records for ALB
+ALB (Application Load Balancer) – Handles HTTPS termination, health checks, and routes traffic to ECS tasks
+ECS Fargate Service – Runs containerized Outline app in private subnets
+Auto Scaling – Automatically adjusts ECS task count based on CPU/memory utilization
+RDS PostgreSQL – Persistent storage for documents and metadata
+ElastiCache Redis – Provides in-memory cache and real-time collaboration support
+SSM Parameter Store – Stores app secrets securely
+S3 + DynamoDB – Remote backend for Terraform state management
+NAT Gateway – Allows ECS tasks private internet access for updates
+ACM – Provides HTTPS certificate validated via Cloudflare DNS
+
+## SSL & DNS
+
+- **Domain & DNS:** The domain is managed by **Cloudflare**. A CNAME record points the root (`@`) to the ALB’s DNS name.  
+![Cloudflare DNS](Images/image-1.png)
+- **SSL/TLS:** Certificates are issued via **AWS ACM** and validated through Cloudflare using CNAME records.
+![ACM Certificate](Images/image-3.png)
+- **HTTPS:** All traffic terminates on the ALB using the ACM certificate.
+![ALB Listeners configuartion](Images/image-4.png)
+
+--
+
+## Deployment & CI/CD
+
+Deployment is fully automated using **GitHub Actions**:
+
+1. **Build & Push** - On push to `main`, GitHub Actions builds the Docker image and pushes it to **Amazon ECR**.  
+2. **Terraform Plan** - Another workflow runs `terraform plan` to preview and validate infrastructure changes automatically on push or PR.  
+3. **Terraform Apply** - Manually triggered with a confirmation input to prevent accidental infrastructure updates; safely deploys approved changes to AWS.  
+4. **Terraform Destroy** - Also manually triggered with a confirmation input to avoid unintended deletions; cleanly tears down AWS resources when needed.
+
+See `.github/workflows/` in this repo for the YAML configuration.
+
+### Screenshots
+
+| Workflow | Screenshot | Description |
+|-----------|-------------|-------------|
+| Build & Push | ![Build & Push](Images/image-5.png) | Successful Docker image build and push to ECR. |
+| Terraform Plan | ![Terraform Plan](Images/image-6.png) | Terraform plan output. |
+| Terraform Apply | ![Terraform Apply](Images/image-7.png) | Terraform apply output. |
+| Terraform Destroy | ![Terraform Destroy](Images/image-8.png) | Terraform destroy output. |
+---
+
+# Screenshots
+APP
+![alt text](Images/image-2.png)
+
+## Local Development Setup
+
+You can run the Outline App locally using Docker Compose.
+
+## Prerequisites
+Docker
+.env file containing local variables
+
+
+```bash
+# 1) Clone the repository
+		git clone https://github.com/abdullahiabdullahi1002-cloud/Outline-App.git
+
+		cd Outline-App
+
+# 2) Create a .env file
+# Include local configuration required for web app to run
+
+# 3) Run the container locally
+
+# Build and run the app using Docker Compose:
+
+    docker-compose up --build
+
+# 4) Stop the App
+
+# To stop the containers:
+
+    docker-compose down
+```
