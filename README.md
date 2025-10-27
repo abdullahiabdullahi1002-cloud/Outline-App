@@ -1,4 +1,4 @@
-# 🚀 Outline App – Document Collaboration Platform
+# Outline App – Document Collaboration Platform
 
 The **Outline App** in this repository is a **self-hosted knowledge base and document collaboration platform**.  
 It allows teams to create, share, and edit documents in real time leveraging **PostgreSQL** for persistence and **Redis** for queues and live collaboration.
@@ -79,6 +79,8 @@ This diagram shows how all AWS components and services fit together:
 - **NAT Gateway** – Enables ECS tasks to access the internet for updates while remaining in private subnets.
 - **ACM (AWS Certificate Manager)** – Issues HTTPS certificates, validated via Cloudflare DNS.
 
+---
+
 ## SSL & DNS
 
 - **Domain & DNS:** The domain is managed by **Cloudflare**. A CNAME record points the root (`@`) to the ALB’s DNS name.  
@@ -88,7 +90,7 @@ This diagram shows how all AWS components and services fit together:
 - **HTTPS:** All traffic terminates on the ALB using the ACM certificate.
 ![ALB Listeners configuartion](Images/image-4.png)
 
---
+---
 
 ## Deployment & CI/CD
 
@@ -114,6 +116,8 @@ See `.github/workflows/` in this repo for the YAML configuration.
 # Screenshots
 APP
 ![alt text](Images/image-2.png)
+
+---
 
 ## Local Development Setup
 
