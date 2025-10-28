@@ -3,7 +3,7 @@
 The **Outline App** in this repository is a **self-hosted knowledge base and document collaboration platform**.  
 It allows teams to create, share, and edit documents in real time leveraging **PostgreSQL** for persistence and **Redis** for queues and live collaboration.
 
-This project showcases a **complete end-to-end AWS deployment**, built from scratch using:
+This project showcases a **complete end-to-end AWS deployment**, built using:
 
 - **Terraform** for Infrastructure as Code  
 - **Docker** for containerization  
@@ -109,13 +109,36 @@ See `.github/workflows/` in this repo for the YAML configuration.
 |-----------|-------------|-------------|
 | Build & Push | ![Build & Push](Images/image-5.png) | Successful Docker image build and push to ECR. |
 | Terraform Plan | ![Terraform Plan](Images/image-6.png) | Terraform plan output. |
+| Terraform Lint | ![Terraform Lint Passing](Images/tflint-passed.png) | Terraform plan lint successfully passing with warnings ignored. |
 | Terraform Apply | ![Terraform Apply](Images/image-7.png) | Terraform apply output. |
 | Terraform Destroy | ![Terraform Destroy](Images/image-8.png) | Terraform destroy output. |
+
 ---
 
 # Screenshots
-APP
-![alt text](Images/image-2.png)
+
+The following screenshots highlight the key components and verification points of the Outline App deployment - from infrastructure provisioning to application validation.
+
+![ECS Service](Images/ecs-service.png)
+*ECS service running one healthy Fargate task behind the Application Load Balancer.*
+![ECS Task Details](Images/ecs-task-details.png) 
+*ECS service running one healthy Fargate task behind the Application Load Balancer.*
+![ECS Auto Scaling](Images/autoscaling-policy.png)
+*ECS auto scaling policy dynamically adjusts the number of running tasks based on CPU utilisation.*
+![RDS Instance](Images/rds-instance.png)
+*PostgreSQL RDS instance provisioned in private subnets, storing application data.* 
+![Redis Cluster](Images/elasticache-redis.png)
+*Redis ElastiCache cluster configured for caching and real-time document collaboration.*
+![SSM Parameters](Images/ssm-parameters.png)
+*AWS Systems Manager Parameter Store securely managing sensitive application secrets.*
+![Terraform Backend (S3)](Images/s3-backend.png)
+*S3 backend showing Terraform state file used during backend initialisation.*
+![App Home Page](Images/app-home.png)
+*Outline App home page running securely over HTTPS*
+![Document Editor](Images/app-document.png)
+*Real-time collaborative editor interface inside the Outline App.*
+![CloudWatch Logs](Images/cloudwatch-logs.png)
+*CloudWatch logs confirming the application container started successfully and is serving requests.*
 
 ---
 
@@ -128,7 +151,7 @@ You can run the **Outline App** locally using **Docker Compose**, which spins up
 ### **Prerequisites**
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed  
 - A valid `.env` file in the project root directory  
-  *(see `.env.example` for guidance — never commit your real `.env` to GitHub)*
+  *(see `.env.example` for guidance - never commit your real `.env` to GitHub)*
 
 ---
 
@@ -161,4 +184,7 @@ docker-compose down
 
 ```
 
+---
+# About This Project
 
+This project shows a production-style deployment of the Outline app on AWS. It uses Terraform to provision the infrastructure (VPC, ECS Fargate, ALB with HTTPS, RDS PostgreSQL, Redis, AWS Systems Manager, etc.) and GitHub Actions to build/push the Docker image to ECR and apply changes. The goal is to demonstrate end-to-end cloud delivery, not just running the app locally.
