@@ -64,7 +64,7 @@ Outline-App/
 
 This diagram shows how all AWS components and services fit together:
 
-![App Architecture](Images/image.png)
+![App Architecture](Images/architecture.png)
 
 ### Components
 
