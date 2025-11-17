@@ -94,24 +94,29 @@ This diagram shows how all AWS components and services fit together:
 
 ## Deployment & CI/CD
 
-Deployment is fully automated using **GitHub Actions**:
+Deployment is automated using **GitHub Actions** and follows a clear, safe CI/CD workflow:
 
-1. **Build & Push** - On push to `main`, GitHub Actions builds the Docker image and pushes it to **Amazon ECR**.  
-2. **Terraform Plan** - Another workflow runs `terraform plan` to preview and validate infrastructure changes automatically on push or PR.  
-3. **Terraform Apply** - Manually triggered with a confirmation input to prevent accidental infrastructure updates; safely deploys approved changes to AWS.  
-4. **Terraform Destroy** - Also manually triggered with a confirmation input to avoid unintended deletions; cleanly tears down AWS resources when needed.
+1. **Build & Push** – On push to `main`, GitHub Actions builds the Docker image for the Outline app and pushes it to **Amazon ECR**.  
+2. **Terraform Plan** – A dedicated workflow runs `terraform plan` automatically on pull requests into `main` to preview and validate infrastructure changes before they are merged.  
+3. **Terraform Apply** – On push to `main`, a separate workflow runs `terraform apply`.  
+   - This job is linked to a protected **`production`** environment in GitHub.  
+   - The workflow **automatically pauses** and requires a reviewer to manually approve the deployment before any changes are applied to AWS.  
+4. **Terraform Destroy** – A manual workflow (`workflow_dispatch`) that requires a confirmation input to avoid unintended deletions; it cleanly tears down AWS resources when needed.
 
 See `.github/workflows/` in this repo for the YAML configuration.
 
+---
+
 ### Screenshots
 
-| Workflow | Screenshot | Description |
-|-----------|-------------|-------------|
-| Build & Push | ![Build & Push](Images/image-5.png) | Successful Docker image build and push to ECR. |
-| Terraform Plan | ![Terraform Plan](Images/image-6.png) | Terraform plan output. |
-| Terraform Lint | ![Terraform Lint Passing](Images/tflint-passed.png) | Terraform plan lint successfully passing with warnings ignored. |
-| Terraform Apply | ![Terraform Apply](Images/image-7.png) | Terraform apply output. |
-| Terraform Destroy | ![Terraform Destroy](Images/image-8.png) | Terraform destroy output. |
+| Workflow / Step              | Screenshot                                               | Description                                                                                     |
+|------------------------------|-----------------------------------------------------------|-------------------------------------------------------------------------------------------------|
+| Build & Push                 | ![Build & Push](Images/image-5.png)                      | Successful Docker image build and push to ECR.                                                  |
+| Terraform Plan               | ![Terraform Plan](Images/image-6.png)                    | Terraform plan output run automatically during PR validation.                                   |
+| Terraform Lint               | ![Terraform Lint Passing](Images/tflint-passed.png)      | TFLint analysis of the Terraform configuration, with warnings safely ignored if non-blocking.   |
+| Terraform Apply Approval Gate| ![Approval Gate](Images/approval-gate.png)               | Shows the protected GitHub Environment requiring approval before Terraform Apply runs.          |
+| Terraform Apply              | ![Terraform Apply](Images/image-7.png)                   | Terraform apply output after approval in the `production` environment.                         |
+| Terraform Destroy            | ![Terraform Destroy](Images/image-8.png)                 | Terraform destroy output from the manual cleanup workflow.                                      |
 
 ---
 
