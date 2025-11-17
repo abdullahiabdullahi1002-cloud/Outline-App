@@ -1,18 +1,14 @@
 name: Terraform Apply
 
 on:
-  workflow_dispatch:
-    inputs:
-      confirm_apply:
-        description: "Type 'yes' to confirm apply"
-        required: true
+  push:
+    branches: [ "main" ]
 
 jobs:
   terraform-apply:
-    name: Apply Terraform Changes
+    name: Terraform Apply
     runs-on: ubuntu-latest
-    if: ${{ github.event.inputs.confirm_apply == 'yes' }}
-
+    environment: production
 
     steps:
       - name: Checkout code
@@ -28,17 +24,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
 
-      - name: Download terraform.tfvars from S3
+      - name: Download terraform.tfvars
         run: aws s3 cp s3://outline-terraform-config/terraform.tfvars ./terraform/terraform.tfvars
 
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init -input=false -reconfigure
 
-      - name: Terraform Plan
-        working-directory: ./terraform
-        run: terraform plan -input=false -out=tfplan
-
       - name: Terraform Apply
         working-directory: ./terraform
-        run: terraform apply -input=false tfplan
+        run: terraform apply -auto-approve -input=false
