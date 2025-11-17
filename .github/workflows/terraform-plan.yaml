@@ -21,12 +21,32 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
 
+      - name: Trivy Scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: config
+          format: 'table'
+          scan-ref: "./terraform"
+          exit-code: '1'
+          severity: 'HIGH,CRITICAL'
+
       - name: Download terraform.tfvars
         run: aws s3 cp s3://outline-terraform-config/terraform.tfvars ./terraform/terraform.tfvars
 
       - name: Terraform Init
         working-directory: ./terraform
         run: terraform init -input=false -reconfigure
+
+      - uses: terraform-linters/setup-tflint@v6
+        name: Setup TFLint
+        with:
+          tflint_version: v0.52.0
+          cache: true
+
+      - name: Terraform Lint
+        run: |
+          tflint --recursive || echo "Lint warnings Found."
+        continue-on-error: true
 
       - name: Terraform Plan
         working-directory: ./terraform
