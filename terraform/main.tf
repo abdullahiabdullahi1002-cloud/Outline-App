@@ -43,6 +43,7 @@ module "ecs_service" {
   source                                      = "./modules/ecs_service"
   project_name                                = var.project_name
   domain_name                                 = var.domain_name
+  aws_region                                  = var.aws_region
   db_username                                 = var.db_username
   db_password                                 = var.db_password
   private_subnet_1_id                         = module.vpc.private_subnet_1_id
@@ -66,6 +67,12 @@ module "ecs_service" {
   redis_collab_url_ssm_arn                    = aws_ssm_parameter.redis_collab_url.arn
   secret_key_ssm_arn                          = aws_ssm_parameter.secret_key.arn
   utils_secret_ssm_arn                        = aws_ssm_parameter.utils_secret.arn
+  log_retention_days                          = var.log_retention_days
+  desired_count                               = var.desired_count
+  health_check_grace_period                   = var.health_check_grace_period
+  ecs_max_capacity                            = var.ecs_max_capacity
+  ecs_min_capacity                            = var.ecs_min_capacity
+  ecs_target_value                            = var.ecs_target_value
 }
 
 module "rds" {

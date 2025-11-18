@@ -24,3 +24,10 @@ variable "rds_endpoint" {}
 variable "redis_endpoint" {}
 variable "secret_key" {}
 variable "utils_secret" {}
+variable "log_retention_days" {}
+variable "desired_count" {}
+variable "health_check_grace_period" {}
+variable "ecs_max_capacity" {}
+variable "ecs_min_capacity" {}
+variable "ecs_target_value" {}
+

@@ -100,10 +100,63 @@ variable "redis_endpoint" {
   type        = string
 }
 
-variable "db_url_ssm_arn" {}
-variable "redis_url_ssm_arn" {}
-variable "redis_collab_url_ssm_arn" {}
-variable "secret_key_ssm_arn" {}
-variable "utils_secret_ssm_arn" {}
+variable "db_url_ssm_arn" {
+  description = "SSM Parameter ARN containing the DATABASE_URL value"
+  type        = string
+}
 
+variable "redis_url_ssm_arn" {
+  description = "SSM Parameter ARN containing the REDIS_URL value"
+  type        = string
+}
+
+variable "redis_collab_url_ssm_arn" {
+  description = "SSM Parameter ARN containing the REDIS_COLLABORATION_URL value"
+  type        = string
+}
+
+variable "secret_key_ssm_arn" {
+  description = "SSM Parameter ARN containing the SECRET_KEY value"
+  type        = string
+}
+
+variable "utils_secret_ssm_arn" {
+  description = "SSM Parameter ARN containing the UTILS_SECRET value"
+  type        = string
+}
+
+variable "log_retention_days" {
+  description = "Number of days to retain logs in CloudWatch"
+  type        = number
+}
+
+variable "aws_region" {
+  description = "The AWS region where resources will be deployed"
+  type        = string
+}
+
+variable "desired_count" {
+  description = "Number of ECS tasks (containers) that should run in the service"
+  type        = number
+}
+
+variable "health_check_grace_period" {
+  description = "The amount of time (in seconds) to ignore failing load balancer health checks at startup"
+  type        = number
+}
+
+variable "ecs_max_capacity" {
+  description = "Maximum number of ECS tasks allowed for autoscaling"
+  type        = number
+}
+
+variable "ecs_min_capacity" {
+  description = "Minimum number of ECS tasks allowed for autoscaling"
+  type        = number
+}
+
+variable "ecs_target_value" {
+  description = "Target memory utilization percentage for ECS autoscaling"
+  type        = number
+}
 

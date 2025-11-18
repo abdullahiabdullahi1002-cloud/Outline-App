@@ -4,7 +4,7 @@ resource "aws_ecs_cluster" "outline" {
 
 resource "aws_cloudwatch_log_group" "outline" {
   name              = "/ecs/${var.project_name}"
-  retention_in_days = 7
+  retention_in_days = var.log_retention_days
 
   tags = {
     Name = "${var.project_name}-log-group"
@@ -36,7 +36,7 @@ resource "aws_ecs_task_definition" "outline" {
         },
         {
           name  = "PORT"
-          value = "3000"
+          value = "${var.containerPort}"
         }
       ]
 
@@ -74,7 +74,7 @@ resource "aws_ecs_task_definition" "outline" {
         logDriver = "awslogs"
         options = {
           awslogs-group         = "/ecs/${var.project_name}"
-          awslogs-region        = "eu-west-2"
+          awslogs-region        = var.aws_region
           awslogs-stream-prefix = "ecs"
         }
       }
@@ -88,11 +88,12 @@ resource "aws_ecs_service" "outline" {
   cluster                            = aws_ecs_cluster.outline.id
   task_definition                    = aws_ecs_task_definition.outline.arn
   propagate_tags                     = "TASK_DEFINITION"
-  desired_count                      = 1
+  desired_count                      = var.desired_count
   deployment_minimum_healthy_percent = var.ecs_task_deployment_minimum_healthy_percent
   deployment_maximum_percent         = var.ecs_task_deployment_maximum_percent
   launch_type                        = "FARGATE"
-  health_check_grace_period_seconds  = 120
+  health_check_grace_period_seconds  = var.health_check_grace_period
+
 
   network_configuration {
     subnets          = [var.private_subnet_1_id, var.private_subnet_2_id]
@@ -112,8 +113,8 @@ resource "aws_ecs_service" "outline" {
 }
 
 resource "aws_appautoscaling_target" "ecs_target" {
-  max_capacity       = 5
-  min_capacity       = 1
+  max_capacity       = var.ecs_max_capacity
+  min_capacity       = var.ecs_min_capacity
   resource_id        = "service/${aws_ecs_cluster.outline.name}/${aws_ecs_service.outline.name}"
   scalable_dimension = "ecs:service:DesiredCount"
   service_namespace  = "ecs"
@@ -131,6 +132,6 @@ resource "aws_appautoscaling_policy" "ecs_policy" {
       predefined_metric_type = "ECSServiceAverageMemoryUtilization"
     }
 
-    target_value = 70
+    target_value = var.ecs_target_value
   }
 }
