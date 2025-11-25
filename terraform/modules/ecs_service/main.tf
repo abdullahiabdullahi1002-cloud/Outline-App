@@ -36,7 +36,7 @@ resource "aws_ecs_task_definition" "outline" {
         },
         {
           name  = "PORT"
-          value = "${var.containerPort}"
+          value = tostring(var.containerPort)
         }
       ]
 
